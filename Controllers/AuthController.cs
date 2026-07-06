@@ -14,7 +14,7 @@ namespace SecureMedicalTransfer.Controllers
             _context = context;
         }
 
-        // MÀN HÌNH ĐĂNG NHẬP (BƯỚC 1)
+        // MÀN HÌNH ĐĂNG NHẬP
         [HttpGet]
         public IActionResult Login()
         {
@@ -23,11 +23,8 @@ namespace SecureMedicalTransfer.Controllers
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
-            // 1. Tìm user trong Database
             var user = _context.Users.FirstOrDefault(u => u.Username == username);
 
-            // 2. Sử dụng BCrypt.Verify để so sánh mật khẩu nhập vào với PasswordHash trong DB
-            // Lưu ý: Đảm bảo bạn đã cài NuGet package: BCrypt.Net-Next
             if (user != null && BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
                 // Xác thực thành công mật khẩu
@@ -52,7 +49,7 @@ namespace SecureMedicalTransfer.Controllers
             return RedirectToAction("Login");
         }
 
-        // MÀN HÌNH XÁC THỰC OTP (BƯỚC 2)
+        // MÀN HÌNH XÁC THỰC OTP
         [HttpGet]
         public IActionResult VerifyOTP()
         {
@@ -122,7 +119,6 @@ namespace SecureMedicalTransfer.Controllers
         }
         public IActionResult ResetData()
         {
-            // Băm mật khẩu "123456" chuẩn bằng BCrypt
             var hashed = BCrypt.Net.BCrypt.HashPassword("123456");
 
             var users = new List<User>
