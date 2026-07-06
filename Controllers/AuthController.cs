@@ -23,31 +23,33 @@ namespace SecureMedicalTransfer.Controllers
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
+            // 1. Tìm user trong Database
             var user = _context.Users.FirstOrDefault(u => u.Username == username);
-            
-            if (user != null && password == "123456")
+
+            // 2. Sử dụng BCrypt.Verify để so sánh mật khẩu nhập vào với PasswordHash trong DB
+            // Lưu ý: Đảm bảo bạn đã cài NuGet package: BCrypt.Net-Next
+            if (user != null && BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
             {
-                // Giữ tạm Username trong Session chờ xác thực bước 2
+                // Xác thực thành công mật khẩu
                 HttpContext.Session.SetString("PendingUsername", username);
 
-                // Sinh mã OTP giả lập gồm 6 số (Yêu cầu OTP giả lập)
-                Random rand = new Random();
-                string mockOtp = rand.Next(100000, 999999).ToString();
-
-                // Lưu OTP vào Session để đối chiếu
+                // Sinh mã OTP
+                string mockOtp = new Random().Next(100000, 999999).ToString();
                 HttpContext.Session.SetString("CurrentOTP", mockOtp);
 
-                // Ghi nhận vào log: Đăng nhập bước 1 thành công
-                LogAction(username, "Đăng nhập Bước 1 (Mật khẩu)", "Thành công", $"Mã OTP giả lập hệ thống vừa sinh ra là: {mockOtp}");
+                // Ghi log
+                LogAction(username, "Đăng nhập Bước 1", "Thành công", $"OTP giả lập: {mockOtp}");
 
-                // Chuyển hướng sang màn hình nhập OTP
+                // Chuyển hướng sang VerifyOTP
                 return RedirectToAction("VerifyOTP");
             }
 
-            // Ghi log đăng nhập thất bại
-            LogAction(username ?? "Unknown", "Đăng nhập Bước 1 (Mật khẩu)", "Thất bại", "Sai tài khoản hoặc mật khẩu");
-            ViewBag.Error = "Sai tài khoản hoặc mật khẩu!";
-            return View();
+            // 3. Xử lý thất bại
+            LogAction(username ?? "Unknown", "Đăng nhập Bước 1", "Thất bại", "Sai tài khoản hoặc mật khẩu");
+
+            // Sử dụng TempData thay vì ViewBag để thông báo lỗi không bị mất khi chuyển trang
+            TempData["Error"] = "Sai tài khoản hoặc mật khẩu!";
+            return RedirectToAction("Login");
         }
 
         // MÀN HÌNH XÁC THỰC OTP (BƯỚC 2)
@@ -117,6 +119,22 @@ namespace SecureMedicalTransfer.Controllers
             };
             _context.AccessLogs.Add(log);
             _context.SaveChanges();
+        }
+        public IActionResult ResetData()
+        {
+            // Băm mật khẩu "123456" chuẩn bằng BCrypt
+            var hashed = BCrypt.Net.BCrypt.HashPassword("123456");
+
+            var users = new List<User>
+    {
+        new User { Username = "bacsi_an", PasswordHash = hashed, Role = "BacSi" },
+        new User { Username = "luutru_binh", PasswordHash = hashed, Role = "NhanVienLuuTru" },
+        new User { Username = "auditor_cuong", PasswordHash = hashed, Role = "Auditor" }
+    };
+
+            _context.Users.AddRange(users);
+            _context.SaveChanges();
+            return Content("Đã nạp xong dữ liệu chuẩn! Hãy thử đăng nhập.");
         }
     }
 }
