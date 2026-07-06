@@ -1,0 +1,61 @@
+﻿html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+.table th,
+table th,
+.table thead th,
+main table thead tr th {
+    background-color: #1e293b !important; /* Đổi nền tiêu đề sang màu xám tối lịch lãm */
+    color: #ffffff !important; /* Ép chữ tiêu đề bắt buộc phải màu trắng */
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    padding: 18px 20px !important;
+}
+
+/* 2. Tạo hiệu ứng mờ kính (Glassmorphism) đồng bộ cho tất cả các Card */
+.card, .container > div.card {
+    background: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* 3. Đảm bảo các dòng dữ liệu bệnh nhân hiển thị sạch sẽ, rõ ràng */
+.table tbody td, table tbody td {
+    background-color: #ffffff !important;
+    color: #334155 !important;
+    font-weight: 500 !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+}

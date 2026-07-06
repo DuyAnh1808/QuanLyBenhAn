@@ -1,0 +1,170 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xác thực hai lớp OTP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            /* Ảnh nền y tế công nghệ cao đồng bộ với trang Login và Main */
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.4) 100%), 
+                        url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        /* 🎯 Hiệu ứng mờ kính xuyên thấu (Glassmorphism) */
+        .otp-card {
+            background: rgba(255, 255, 255, 0.65) !important; /* Đổ nền trắng trong suốt */
+            backdrop-filter: blur(16px) !important;             /* Làm mờ hậu cảnh */
+            -webkit-backdrop-filter: blur(16px) !important;     /* Hỗ trợ Safari */
+            border: 1px solid rgba(255, 255, 255, 0.4) !important; /* Viền sáng tạo khối nổi */
+            border-radius: 24px;
+            box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.07), 0 10px 10px -5px rgba(0, 0, 0, 0.03) !important;
+            padding: 40px;
+            width: 100%;
+            max-width: 440px;
+            transition: all 0.3s ease;
+        }
+
+        .otp-title {
+            font-weight: 800;
+            color: #d97706; /* Màu vàng Warning sang trọng */
+            letter-spacing: -0.5px;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .otp-subtitle {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        /* Khung gợi ý OTP Mock thiết kế tinh tế hơn */
+        .alert-info-custom {
+            background-color: rgba(219, 234, 254, 0.7) !important;
+            border: 1px solid rgba(191, 219, 254, 0.8) !important;
+            color: #1e40af;
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 0.9rem;
+        }
+
+        .form-group-custom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            font-weight: 700;
+            color: #475569;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Ô nhập OTP to rõ, dễ thao tác */
+        .form-control {
+            border-radius: 14px;
+            border: 1.5px solid #cbd5e1;
+            padding: 12px 16px;
+            font-size: 1.5rem !important; /* Chữ số OTP to rõ */
+            font-weight: 700;
+            letter-spacing: 6px; /* Tạo khoảng cách giữa các số OTP */
+            background-color: rgba(248, 250, 252, 0.7) !important;
+            color: #0f172a;
+            transition: all 0.2s ease;
+            width: 100%;
+            max-width: 340px;
+            text-align: center;
+        }
+
+        .form-control:focus {
+            background-color: #ffffff !important;
+            border-color: #10b981; /* Đổi sang viền xanh Success khi focus */
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+        }
+
+        /* Nút Submit đồng điệu */
+        .btn-submit {
+            background-color: #10b981;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            padding: 14px;
+            width: 100%;
+            max-width: 340px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="otp-card shadow-lg">
+        <div class="otp-title"><i class="fa-solid fa-key-skeleton me-1"></i> XÁC THỰC KÉP (2FA)</div>
+        <div class="otp-subtitle">Nhập mã OTP</div>
+
+        <div class="alert alert-info-custom text-center mb-4">
+            <strong class="text-uppercase" style="font-size: 0.8rem; letter-spacing: 0.5px;"><i class="fa-solid fa-circle-info"></i> [MOCK OTP HINT]</strong><br />
+            Mã OTP gửi đến thiết bị của bạn là: <span class="badge bg-dark fs-6 font-monospace mt-1 px-2 py-1">@ViewBag.MockOtpHint</span>
+        </div>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger p-3 mb-4 border-0 rounded-3 text-danger small fw-semibold text-center" style="background-color: rgba(255, 245, 245, 0.8);">
+                <i class="fa-solid fa-circle-exclamation me-1"></i> @ViewBag.Error
+            </div>
+        }
+
+        <form action="/Auth/VerifyOTP" method="post" class="d-flex flex-column align-items-center">
+            <div class="form-group-custom">
+                <label class="form-label">Nhập mã 6 số:</label>
+                <input type="text" name="otp" class="form-control" placeholder="••••••" maxlength="6" required autofocus autocomplete="off" />
+            </div>
+            
+            <button type="submit" class="btn btn-submit">
+                Xác nhận & Đăng nhập <i class="fa-solid fa-shield-check"></i>
+            </button>
+        </form>
+    </div>
+
+</body>
+</html>
