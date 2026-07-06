@@ -117,20 +117,20 @@ namespace SecureMedicalTransfer.Controllers
             _context.AccessLogs.Add(log);
             _context.SaveChanges();
         }
-        public IActionResult ResetData()
-        {
-            var hashed = BCrypt.Net.BCrypt.HashPassword("123456");
+        //public IActionResult ResetData()
+        //{
+            //var hashed = BCrypt.Net.BCrypt.HashPassword("123456");
 
-            var users = new List<User>
-    {
-        new User { Username = "bacsi_an", PasswordHash = hashed, Role = "BacSi" },
-        new User { Username = "luutru_binh", PasswordHash = hashed, Role = "NhanVienLuuTru" },
-        new User { Username = "auditor_cuong", PasswordHash = hashed, Role = "Auditor" }
-    };
+            //var users = new List<User>
+    //{
+        //new User { Username = "bacsi_an", PasswordHash = hashed, Role = "BacSi" },
+        //new User { Username = "luutru_binh", PasswordHash = hashed, Role = "NhanVienLuuTru" },
+        //new User { Username = "auditor_cuong", PasswordHash = hashed, Role = "Auditor" }
+    //};
 
-            _context.Users.AddRange(users);
-            _context.SaveChanges();
-            return Content("Đã nạp xong dữ liệu chuẩn! Hãy thử đăng nhập.");
-        }
+            //_context.Users.AddRange(users);
+            //_context.SaveChanges();
+            //return Content("Đã nạp xong dữ liệu chuẩn! Hãy thử đăng nhập.");
+        //}
     }
 }
