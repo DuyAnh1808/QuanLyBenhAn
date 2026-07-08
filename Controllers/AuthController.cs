@@ -35,14 +35,14 @@ namespace SecureMedicalTransfer.Controllers
                 HttpContext.Session.SetString("CurrentOTP", mockOtp);
 
                 // Ghi log
-                LogAction(username, "Đăng nhập Bước 1", "Thành công", $"OTP giả lập: {mockOtp}");
+                LogAction(username, "Đăng nhập", "Thành công", $"OTP giả lập: {mockOtp}");
 
                 // Chuyển hướng sang VerifyOTP
                 return RedirectToAction("VerifyOTP");
             }
 
             // 3. Xử lý thất bại
-            LogAction(username ?? "Unknown", "Đăng nhập Bước 1", "Thất bại", "Sai tài khoản hoặc mật khẩu");
+            LogAction(username ?? "Unknown", "Đăng nhập", "Thất bại", "Sai tài khoản hoặc mật khẩu");
 
             // Sử dụng TempData thay vì ViewBag để thông báo lỗi không bị mất khi chuyển trang
             TempData["Error"] = "Sai tài khoản hoặc mật khẩu!";
