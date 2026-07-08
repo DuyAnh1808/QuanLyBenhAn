@@ -134,7 +134,25 @@ namespace SecureMedicalTransfer.Controllers
 
             return RedirectToAction("Index");
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken] // Bảo mật chống CSRF
+        public IActionResult DeleteRecord(int id)
+        {
+            var username = HttpContext.Session.GetString("Username");
+            // Chỉ Bác sĩ mới có quyền xóa
+            if (HttpContext.Session.GetString("Role") != "BacSi") return Forbid();
 
+            var record = _context.MedicalRecords.Find(id);
+            if (record != null)
+            {
+                _context.MedicalRecords.Remove(record);
+                _context.SaveChanges();
+                // Ghi lại log cho Auditor
+                LogAction(username!, "Xóa bệnh án", "Thành công", $"Đã xóa ID: {id}");
+                TempData["Success"] = "Đã xóa bệnh án thành công.";
+            }
+            return RedirectToAction("Index");
+        }
         // CHỨC NĂNG 2: GIẢI MÃ BỆNH ÁN (Bác sĩ hoặc Nhân viên lưu trữ hợp lệ)
         [HttpPost]
         public IActionResult DecryptRecord(int id)

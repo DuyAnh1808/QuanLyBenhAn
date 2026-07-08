@@ -7,13 +7,10 @@ namespace SecureMedicalTransfer
 {
     public static class SecurityHelper
     {
-        // Bí danh khóa cố định phục vụ demo (Trong thực tế cần quản lý khóa an toàn bằng Key Vault)
         // AES-256 yêu cầu khóa đúng 32 bytes (256 bits)
         private static readonly byte[] EncryptionKey = Encoding.UTF8.GetBytes("SuperSecretKeyForMedical12345678");
 
-        // ==========================================
         // 1. XỬ LÝ MẬT KHẨU (BCRYPT)
-        // ==========================================
         public static string HashPassword(string password)
         {
             // Tự động thêm muối (Salt) và băm mật khẩu
@@ -27,9 +24,7 @@ namespace SecureMedicalTransfer
             catch { return false; }
         }
 
-        // ==========================================
         // 2. MÃ HÓA BỆNH ÁN (AES-GCM)
-        // ==========================================
         public static (byte[] ciphertext, byte[] tag, byte[] iv) EncryptMedicalRecord(string plaintext)
         {
             byte[] plaintextBytes = Encoding.UTF8.GetBytes(plaintext);
@@ -48,17 +43,13 @@ namespace SecureMedicalTransfer
             return (ciphertext, tag, iv);
         }
 
-        // ==========================================
         // 3. GIẢI MÃ BỆNH ÁN VÀ KIỂM TRA TÍNH TOÀN VẸN
-        // ==========================================
         public static string DecryptMedicalRecord(byte[] ciphertext, byte[] tag, byte[] iv)
         {
             byte[] decryptedBytes = new byte[ciphertext.Length];
 
             using (AesGcm aesGcm = new AesGcm(EncryptionKey, tag.Length))
             {
-                // Thuật toán tự động kiểm tra xem ciphertext và tag có bị chỉnh sửa không.
-                // Nếu bị sửa dù chỉ 1 bit, hàm này sẽ ném ra ngoại lệ CryptographicException lập tức.
                 aesGcm.Decrypt(iv, ciphertext, tag, decryptedBytes);
             }
 
